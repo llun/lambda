@@ -1,6 +1,6 @@
 {
-  "name": "Lambda_Collection_Sendmail",
-  "description": "Personal SES client",
+  "name": "Lambda_Collection",
+  "description": "Personal Lambda functions",
   "memory": 128,
   "timeout": 5,
   "handler": "index.entry",

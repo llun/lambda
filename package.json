@@ -1,0 +1,28 @@
+{
+  "name": "lambda",
+  "version": "1.0.0",
+  "description": "- Sendmail, SES Client for sending out email",
+  "main": "deploy.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llun/lambda.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/llun/lambda/issues"
+  },
+  "homepage": "https://github.com/llun/lambda#readme",
+  "dependencies": {
+    "@aws-sdk/client-lambda": "^3.310.0",
+    "@aws-sdk/client-ses": "^3.310.0",
+    "archiver": "^5.3.1",
+    "dotenv-flow": "^3.2.0",
+    "lodash": "^4.17.21",
+    "stream-buffers": "^3.0.2",
+    "yargs": "^17.7.1"
+  }
+}
