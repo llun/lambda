@@ -1,0 +1,9 @@
+{
+  "name": "Lambda_Collection",
+  "description": "Personal sendmail functions",
+  "memory": 128,
+  "timeout": 5,
+  "role": "arn:aws:iam::107563078874:role/CollectionLambdaSendmail",
+  "handler": "index.entry",
+  "runtime": "nodejs18.x"
+}

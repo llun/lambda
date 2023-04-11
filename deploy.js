@@ -25,20 +25,8 @@ const streamBuffers = require("stream-buffers");
 const crypto = require("crypto");
 const _ = require("lodash");
 
-const N_VIRGINIA = "eu-central-1";
+const FRANKFURT = "eu-central-1";
 
-const argv = /** @type {Arguments} */ (
-  require("yargs")
-    .option("awsid", {
-      describe: "AWS Account ID",
-      required: true,
-      type: "string",
-      default: process.env.AWS_ACCOUNT_ID,
-    })
-    .help().argv
-);
-
-const awsId = argv.awsid;
 const projectConfig = /** @type {ProjectConfig} */ (
   JSON.parse(
     fs
@@ -113,11 +101,37 @@ async function waitActive(lambda, functionName) {
 /**
  *
  * @param {string} functionName
+ * @returns {ProjectConfig}
+ */
+function getFunctionConfig(functionName) {
+  try {
+    const base = projectConfig;
+    const functionConfigPath = path.join(
+      __dirname,
+      "functions",
+      functionName,
+      "project.json"
+    );
+    if (!fs.existsSync(functionConfigPath)) {
+      return base;
+    }
+    const functionConfig = JSON.parse(
+      fs.readFileSync(functionConfigPath).toString("utf-8")
+    );
+    return { ...base, ...functionConfig };
+  } catch {
+    return projectConfig;
+  }
+}
+
+/**
+ *
+ * @param {string} functionName
  * @returns {Promise<string | undefined>}
  */
 async function deploy(functionName) {
   const name = `${projectConfig.name}_${functionName}`;
-  const lambda = new LambdaClient({ region: N_VIRGINIA });
+  const lambda = new LambdaClient({ region: FRANKFURT });
 
   let shouldPublishVersion = false;
   /** @type {string | undefined} */
@@ -144,7 +158,8 @@ async function deploy(functionName) {
     };
     version = configuration.Version;
 
-    const local = _.pick(projectConfig, [
+    const config = getFunctionConfig(functionName);
+    const local = _.pick(config, [
       "memory",
       "timeout",
       "handler",
