@@ -1,20 +1,23 @@
 // @ts-check
 const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
+const { z } = require("zod");
 
-/**
- * @typedef {{ from: string, to: string[], replyTo?: string, subject: string, content: { text: string, html: string }, configurationSet?: 'transaction-emails' }} Event
- */
-
-/**
- *
- * @param {Event} event
- * @param {import('aws-lambda').Context} context
- *
- * @returns
- */
-exports.entry = async function (event, context) {
-  const client = new SESClient({ region: "eu-central-1" });
-  const input = {
+const Event = z
+  .object({
+    from: z.string().email({ message: "Invalid from address" }),
+    to: z.array(z.string().email({ message: "Invalid to address" })),
+    replyTo: z
+      .string()
+      .email({ message: "Invalid reply to address" })
+      .optional(),
+    subject: z.string(),
+    content: z.object({
+      text: z.string(),
+      html: z.string(),
+    }),
+    configurationSet: z.literal("transaction-emails").optional(),
+  })
+  .transform((event) => ({
     Source: event.from,
     Destination: {
       ToAddresses: event.to,
@@ -36,7 +39,19 @@ exports.entry = async function (event, context) {
     ...(event.configurationSet && {
       ConfigurationSetName: event.configurationSet,
     }),
-  };
+  }));
+
+/**
+ *
+ * @param {z.infer<typeof Event>} event
+ * @param {import('aws-lambda').Context} context
+ *
+ * @returns
+ */
+exports.entry = async function (event, context) {
+  const client = new SESClient({ region: "eu-central-1" });
+
+  const input = Event.parse(event);
   const command = new SendEmailCommand(input);
   const response = await client.send(command);
 
