@@ -17,12 +17,15 @@
   },
   "homepage": "https://github.com/llun/lambda#readme",
   "dependencies": {
-    "@aws-sdk/client-lambda": "^3.315.0",
-    "@aws-sdk/client-ses": "^3.315.0",
+    "@aws-sdk/client-lambda": "^3.316.0",
+    "@aws-sdk/client-ses": "^3.316.0",
     "archiver": "^5.3.1",
     "dotenv-flow": "^3.2.0",
     "lodash": "^4.17.21",
     "stream-buffers": "^3.0.2",
     "yargs": "^17.7.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.114"
   }
 }
