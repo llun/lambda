@@ -2,14 +2,21 @@
 const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
 const { z } = require("zod");
 
+const Email = z.union([
+  z.string().email({ message: "Invalid email address" }),
+  z
+    .object({
+      name: z.string().regex(/[\w ]+/, "Invalid email name"),
+      email: z.string().email({ message: "Invalid email address" }),
+    })
+    .transform((val) => `"${val.name}" <${val.email}>`),
+]);
+
 const Event = z
   .object({
-    from: z.string().email({ message: "Invalid from address" }),
-    to: z.array(z.string().email({ message: "Invalid to address" })),
-    replyTo: z
-      .string()
-      .email({ message: "Invalid reply to address" })
-      .optional(),
+    from: Email,
+    to: Email.array(),
+    replyTo: Email.optional(),
     subject: z.string(),
     content: z.object({
       text: z.string(),
