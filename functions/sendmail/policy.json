@@ -14,12 +14,11 @@
       "Action": "logs:CreateLogGroup",
       "Resource": "arn:aws:logs:eu-central-1:107563078874:*"
     },
-
     {
       "Effect": "Allow",
       "Action": ["logs:CreateLogStream", "logs:PutLogEvents"],
       "Resource": [
-        "arn:aws:logs:eu-central-1:107563078874:log-group:/aws/lambda/functionname:*"
+        "arn:aws:logs:eu-central-1:107563078874:log-group:/aws/lambda/Lambda_Collection_sendmail:*"
       ]
     }
   ]
