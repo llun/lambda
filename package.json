@@ -27,7 +27,8 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.134"
+    "@types/aws-lambda": "^8.10.134",
+    "@types/node": "^20.11.24"
   },
   "packageManager": "yarn@4.1.0"
 }
