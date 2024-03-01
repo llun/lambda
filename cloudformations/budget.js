@@ -45,7 +45,7 @@ const template = {
       Type: "AWS::SNS::Subscription",
       Properties: {
         Endpoint:
-          "arn:aws:lambda:eu-central-1:107563078874:function:Lambda_Collection_budget",
+          "arn:aws:lambda:eu-central-1:107563078874:function:Lambda_Collection_budget:current",
         Protocol: "lambda",
         TopicArn: { Ref: "BudgetSNSTopic" },
       },
