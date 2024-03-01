@@ -3,7 +3,7 @@
   "description": "Personal budget functions",
   "memory": 128,
   "timeout": 5,
-  "role": "arn:aws:iam::107563078874:role/CollectionLambdaSendmail",
+  "role": "arn:aws:iam::107563078874:role/CollectionLambdaBudget",
   "handler": "index.entry",
   "runtime": "nodejs20.x"
 }

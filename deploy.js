@@ -224,7 +224,7 @@ async function deploy(functionName) {
       version = latestVersion.Version;
     }
   } catch (error) {
-    if (error.code !== "ResourceNotFoundException") {
+    if (error.name !== "ResourceNotFoundException") {
       throw error;
     }
     const [digest, content] = await archivingFunction(functionName);
@@ -232,18 +232,19 @@ async function deploy(functionName) {
       throw new Error(`Fail to create ${functionName} archive`);
     }
     console.log(`> Create new function ${name}`);
+    const config = getFunctionConfig(functionName);
     await lambda.send(
       new CreateFunctionCommand({
         FunctionName: name,
-        Runtime: projectConfig.runtime,
-        Handler: projectConfig.handler,
-        Role: projectConfig.role,
-        Timeout: projectConfig.timeout,
-        Description: projectConfig.description,
+        Runtime: config.runtime,
+        Handler: config.handler,
+        Role: config.role,
+        Timeout: config.timeout,
+        Description: config.description,
         Code: {
           ZipFile: content,
         },
-        MemorySize: projectConfig.memory,
+        MemorySize: config.memory,
       })
     );
     await waitActive(lambda, name);
@@ -271,10 +272,12 @@ async function deploy(functionName) {
 }
 
 async function run() {
-  const targetFunction = "sendmail";
-  const version = await deploy(targetFunction);
-  if (!version) {
-    throw new Error("Fail to deploy function");
+  const functions = ["sendmail", "budget"];
+  for (const fn of functions) {
+    const version = await deploy(fn);
+    if (!version) {
+      throw new Error(`Fail to deploy ${fn}`);
+    }
   }
 }
 
