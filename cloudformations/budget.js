@@ -50,6 +50,16 @@ const template = {
         TopicArn: { Ref: "BudgetSNSTopic" },
       },
     },
+    BudgetPermission: {
+      Type: "AWS::Lambda::Permission",
+      Properties: {
+        Action: "lambda:InvokeFunction",
+        Principal: "sns.amazonaws.com",
+        FunctionName:
+          "arn:aws:lambda:eu-central-1:107563078874:function:Lambda_Collection_budget:current",
+        SourceArn: { Ref: "BudgetSNSTopic" },
+      },
+    },
   },
 };
 
