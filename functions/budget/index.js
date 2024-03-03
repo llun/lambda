@@ -1,19 +1,15 @@
 const {
   CloudFrontClient,
   UpdateDistributionCommand,
-  GetDistributionCommand,
   GetDistributionConfigCommand,
 } = require("@aws-sdk/client-cloudfront");
 
-const DISTRIBUTIONS = ["EK4WTHZ81N3UE"];
+const DISTRIBUTIONS = ["E8PBHKRKQ6RKI", "E2F19B9UCBX0DS"];
 const client = new CloudFrontClient({ region: "us-east-1" });
 
 exports.entry = async function (event) {
   if (!("Records" in event)) return false;
 
-  const records = event.Records.filter(
-    (record) => record.EventSource === "aws:sns"
-  );
   const exceeded = event.Records.find((record) => {
     return record.Sns.Subject.includes("has exceeded your alert threshold");
   });
