@@ -1,4 +1,14 @@
-exports.entry = async function (event, context) {
+const {
+  CloudFrontClient,
+  UpdateDistributionCommand,
+  GetDistributionCommand,
+  GetDistributionConfigCommand,
+} = require("@aws-sdk/client-cloudfront");
+
+const DISTRIBUTIONS = ["EK4WTHZ81N3UE"];
+const client = new CloudFrontClient({ region: "us-east-1" });
+
+exports.entry = async function (event) {
   if (!("Records" in event)) return false;
 
   const records = event.Records.filter(
@@ -8,6 +18,25 @@ exports.entry = async function (event, context) {
     return record.Sns.Subject.includes("has exceeded your alert threshold");
   });
   if (!exceeded) return false;
+
+  await Promise.all(
+    DISTRIBUTIONS.map(async (distribution) => {
+      const { DistributionConfig: previousConfig, ETag } = await client.send(
+        new GetDistributionConfigCommand({
+          Id: distribution,
+        })
+      );
+      const command = new UpdateDistributionCommand({
+        Id: distribution,
+        DistributionConfig: {
+          ...previousConfig,
+          Enabled: false,
+        },
+        IfMatch: ETag,
+      });
+      await client.send(command);
+    })
+  );
 
   return true;
 };

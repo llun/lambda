@@ -17,9 +17,10 @@
   },
   "homepage": "https://github.com/llun/lambda#readme",
   "dependencies": {
-    "@aws-sdk/client-cloudformation": "^3.523.0",
-    "@aws-sdk/client-lambda": "^3.523.0",
-    "@aws-sdk/client-ses": "^3.523.0",
+    "@aws-sdk/client-cloudformation": "^3.525.0",
+    "@aws-sdk/client-cloudfront": "^3.525.0",
+    "@aws-sdk/client-lambda": "^3.525.0",
+    "@aws-sdk/client-ses": "^3.525.0",
     "archiver": "^7.0.0",
     "dotenv-flow": "^4.1.0",
     "lodash": "^4.17.21",
