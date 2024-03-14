@@ -14,13 +14,12 @@
     }
   ],
   "hosting": {
-    "public": "public",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
-        "source": "/hello",
-        "function": {
-          "functionId": "helloWorld",
+        "source": "**",
+        "run": {
+          "serviceId": "activitiesnext",
           "region": "europe-west1"
         }
       }
