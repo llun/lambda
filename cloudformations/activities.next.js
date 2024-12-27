@@ -99,6 +99,28 @@ const staticCDNResources = {
       },
     },
   },
+  [`${ActivityNext}ResponseHeaderPolicy`]: {
+    Type: "AWS::CloudFront::ResponseHeadersPolicy",
+    Properties: {
+      ResponseHeadersPolicyConfig: {
+        Name: "ActivityNextResponseHeaderPolicy",
+        Comment: "Response header policy for allowing origin from llun.social",
+        CorsConfig: {
+          AccessControlAllowOrigins: {
+            Items: ["https://llun.social"],
+          },
+          AccessControlAllowHeaders: {
+            Items: ["*"],
+          },
+          AccessControlAllowMethods: {
+            Items: ["GET", "HEAD", "OPTIONS"],
+          },
+          AccessControlAllowCredentials: false,
+          OriginOverride: true,
+        },
+      },
+    },
+  },
   [`${ActivityNext}CDN`]: {
     Type: "AWS::CloudFront::Distribution",
     Properties: {
@@ -126,6 +148,9 @@ const staticCDNResources = {
           },
           OriginRequestPolicyId: {
             Ref: `${ActivityNext}OriginRequestPolicy`,
+          },
+          ResponseHeadersPolicyId: {
+            Ref: `${ActivityNext}ResponseHeaderPolicy`,
           },
           Compress: true,
           ViewerProtocolPolicy: "redirect-to-https",
