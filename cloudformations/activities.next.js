@@ -53,7 +53,7 @@ const staticS3Resources = {
   },
 };
 
-const cdnResources = {
+const staticCDNResources = {
   [`${ActivityNext}CachePolicy`]: {
     Type: "AWS::CloudFront::CachePolicy",
     Properties: {
@@ -157,7 +157,7 @@ const template = {
   },
   Resources: {
     ...staticS3Resources,
-    ...cdnResources,
+    ...staticCDNResources,
   },
 };
 
