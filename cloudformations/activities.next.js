@@ -153,6 +153,7 @@ const staticCDNResources = {
             Ref: `${ActivityNext}ResponseHeaderPolicy`,
           },
           Compress: true,
+          AllowedMethods: ["GET", "HEAD", "OPTIONS"],
           ViewerProtocolPolicy: "redirect-to-https",
         },
         ViewerCertificate: {
