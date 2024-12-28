@@ -19,6 +19,17 @@ const staticS3Resources = {
     Type: "AWS::S3::Bucket",
     Properties: {
       BucketName: StaticBucketDomain,
+      CorsConfiguration: {
+        CorsRules: [
+          {
+            AllowedHeaders: ["*"],
+            AllowedMethods: ["GET", "HEAD"],
+            AllowedOrigins: ["https://llun.social"],
+            Id: "ActivityPubCorsRule",
+            MaxAge: 3600,
+          },
+        ],
+      },
       PublicAccessBlockConfiguration: {
         BlockPublicAcls: false,
         BlockPublicPolicy: false,
