@@ -13,6 +13,12 @@ const StackName = "ActivityPub";
 const ActivityNext = "ActivityNext";
 const StaticBucket = "ActivityNextStatic";
 const StaticBucketDomain = "static.llun.social";
+const ManagedCachingOptimizedPolicyId =
+  "658327ea-f89d-4fab-a63d-7e88639e58f6";
+const ManagedCorsS3OriginRequestPolicyId =
+  "88a5eaf4-2fd4-4709-b370-b4c650ea3fcf";
+const ManagedCorsWithPreflightResponseHeadersPolicyId =
+  "5cc3b908-e619-4b99-88e5-2cf7f45965bd";
 
 const staticS3Resources = {
   [StaticBucket]: {
@@ -65,73 +71,6 @@ const staticS3Resources = {
 };
 
 const staticCDNResources = {
-  [`${ActivityNext}CachePolicy`]: {
-    Type: "AWS::CloudFront::CachePolicy",
-    Properties: {
-      CachePolicyConfig: {
-        Comment: `Cache policy for ${ActivityNext}`,
-        DefaultTTL: 86400,
-        MaxTTL: 31536000,
-        MinTTL: 1,
-        Name: `${ActivityNext}CachePolicy`,
-        ParametersInCacheKeyAndForwardedToOrigin: {
-          CookiesConfig: {
-            CookieBehavior: "none",
-          },
-          EnableAcceptEncodingBrotli: true,
-          EnableAcceptEncodingGzip: true,
-          HeadersConfig: {
-            HeaderBehavior: "whitelist",
-            Headers: ["Host", "Origin"],
-          },
-          QueryStringsConfig: {
-            QueryStringBehavior: "none",
-          },
-        },
-      },
-    },
-  },
-  [`${ActivityNext}OriginRequestPolicy`]: {
-    Type: "AWS::CloudFront::OriginRequestPolicy",
-    Properties: {
-      OriginRequestPolicyConfig: {
-        Comment: `Origin request policy for ${ActivityNext}`,
-        CookiesConfig: {
-          CookieBehavior: "none",
-        },
-        HeadersConfig: {
-          HeaderBehavior: "whitelist",
-          Headers: ["Host"],
-        },
-        Name: `${ActivityNext}OriginRequestPolicy`,
-        QueryStringsConfig: {
-          QueryStringBehavior: "none",
-        },
-      },
-    },
-  },
-  [`${ActivityNext}ResponseHeaderPolicy`]: {
-    Type: "AWS::CloudFront::ResponseHeadersPolicy",
-    Properties: {
-      ResponseHeadersPolicyConfig: {
-        Name: "ActivityNextResponseHeaderPolicy",
-        Comment: "Response header policy for allowing origin from llun.social",
-        CorsConfig: {
-          AccessControlAllowOrigins: {
-            Items: ["https://llun.social"],
-          },
-          AccessControlAllowHeaders: {
-            Items: ["*"],
-          },
-          AccessControlAllowMethods: {
-            Items: ["GET", "HEAD", "OPTIONS"],
-          },
-          AccessControlAllowCredentials: false,
-          OriginOverride: true,
-        },
-      },
-    },
-  },
   [`${ActivityNext}CDN`]: {
     Type: "AWS::CloudFront::Distribution",
     Properties: {
@@ -154,15 +93,10 @@ const staticCDNResources = {
         IPV6Enabled: true,
         DefaultCacheBehavior: {
           TargetOriginId: `${StaticBucket}Origin`,
-          CachePolicyId: {
-            Ref: `${ActivityNext}CachePolicy`,
-          },
-          OriginRequestPolicyId: {
-            Ref: `${ActivityNext}OriginRequestPolicy`,
-          },
-          ResponseHeadersPolicyId: {
-            Ref: `${ActivityNext}ResponseHeaderPolicy`,
-          },
+          CachePolicyId: ManagedCachingOptimizedPolicyId,
+          OriginRequestPolicyId: ManagedCorsS3OriginRequestPolicyId,
+          ResponseHeadersPolicyId:
+            ManagedCorsWithPreflightResponseHeadersPolicyId,
           Compress: true,
           AllowedMethods: ["GET", "HEAD", "OPTIONS"],
           ViewerProtocolPolicy: "redirect-to-https",
@@ -172,10 +106,6 @@ const staticCDNResources = {
             "arn:aws:acm:us-east-1:107563078874:certificate/de964534-d6e8-49ae-bca2-656c4fef49ce",
           SslSupportMethod: "sni-only",
           MinimumProtocolVersion: "TLSv1.2_2021",
-        },
-        Logging: {
-          Bucket: "llun.logs.s3.amazonaws.com",
-          Prefix: "cloudfront/llun.social",
         },
       },
     },
